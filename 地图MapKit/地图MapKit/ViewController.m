@@ -36,12 +36,12 @@
     [self convertCoordinateWithPoint:coordinate];
 }
 
-- (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    //移除大头针
-    NSArray * annos = self.mapView.annotations ;  //annotations存放着地图上所有的大头针
-    [self.mapView removeAnnotations:annos];
-}
+#pragma mark  -  拖拽的时候移除大头针
+//- (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+//{
+//    NSArray * annos = self.mapView.annotations ;  //annotations存放着地图上所有的大头针
+//    [self.mapView removeAnnotations:annos];
+//}
 
 #pragma mark - 地图某一点 转  经纬度
 - (void)convertCoordinateWithPoint:(CLLocationCoordinate2D)point
@@ -62,8 +62,8 @@
         CLPlacemark * placeMark = [placemarks firstObject];
         anno.subtitle = placeMark.locality ;
         anno.title = placeMark.country ;
-        NSLog(@"%@",placeMark.country);
-        NSLog(@"%@",placeMark.locality);
+//        NSLog(@"%@",placeMark.country);
+//        NSLog(@"%@",placeMark.locality);
         
     }];
     //添加多个大头针
@@ -82,7 +82,28 @@
  */
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-    return nil;
+//    return nil;
+    // MKPinAnnotationView 为系统自带的大头针样式
+    static NSString * identifier = @"MKpinAnnotation";
+    MKPinAnnotationView * pin = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    if (pin == nil) {
+        pin = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+    }
+    pin.annotation = annotation ;
+    
+    //设置是否弹出标注
+    pin.canShowCallout = YES ;
+    
+    //设置大头针颜色
+    pin.pinTintColor = [UIColor orangeColor];
+    
+    //设置大头针显示效果
+    pin.animatesDrop = YES ;
+    
+    //设置大头针可以拖拽效果
+    pin.draggable = YES ;   //按住control键再拖动
+    return  pin ;
+    
 }
 
 - (CLGeocoder *)geoC
