@@ -10,11 +10,13 @@
 #import "ViewController.h"
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import "YLAnnotion.h"
 
 
 @interface ViewController ()<MKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property(nonatomic,strong)CLLocationManager * locationM ;
+@property(nonatomic,strong)CLGeocoder * geoC ;
 @end
 
 @implementation ViewController
@@ -25,56 +27,71 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//    self.mapView.mapType = MKMapTypeHybridFlyover ;
-//    self.mapView.zoomEnabled = NO ;
-//    self.mapView.showsCompass = NO;
-    //比例尺
-    self.mapView.showsScale = YES ;
-    //显示建筑物
-//    self.mapView.showsBuildings = YES ;
-    [self locationM];
-    //请求获取用户位置，需要授权（导入CoreLocation框架）
-    self.mapView.showsUserLocation = YES ;
+    //1.获取当前触摸点
+    CGPoint point = [[touches anyObject] locationInView:self.mapView];
+    //2.转换为经纬度
+    CLLocationCoordinate2D coordinate = [self.mapView convertPoint:point toCoordinateFromView:self.mapView];
     
-    self.mapView.userTrackingMode = MKUserTrackingModeFollowWithHeading ;
+    //3.添加大头针
+    [self convertCoordinateWithPoint:coordinate];
+}
+
+- (void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    //移除大头针
+    NSArray * annos = self.mapView.annotations ;  //annotations存放着地图上所有的大头针
+    [self.mapView removeAnnotations:annos];
+}
+
+#pragma mark - 地图某一点 转  经纬度
+- (void)convertCoordinateWithPoint:(CLLocationCoordinate2D)point
+{
+    /**
+     MKUserLocation (大头针模型)
+     */
+    YLAnnotion * anno = [[YLAnnotion alloc] init];
+    anno.coordinate = point ;
+    anno.title = @"你猜你猜";
+    anno.subtitle = @"我猜不出";
+    [self.mapView addAnnotation:anno];
+    
+    //根据大头针所在经纬度，通过反地理编码求出所在的城市,街道
+    CLLocation * location = [[CLLocation alloc] initWithLatitude:anno.coordinate.latitude longitude:anno.coordinate.longitude];
+    [self.geoC reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        //地标对象
+        CLPlacemark * placeMark = [placemarks firstObject];
+        anno.subtitle = placeMark.locality ;
+        anno.title = placeMark.country ;
+        NSLog(@"%@",placeMark.country);
+        NSLog(@"%@",placeMark.locality);
+        
+    }];
+    //添加多个大头针
+//    [self.mapView addAnnotations:<#(nonnull NSArray<id<MKAnnotation>> *)#>]
 }
 
 #pragma  mark - MKMapViewDelegate
 - (void) mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
-      /**
-        MKUserLocation (大头针模型)
-       */
-    userLocation.title = @"你猜你猜你猜猜猜";
-    userLocation.subtitle = @"去找百度地图";
-   
-    //设置地图显示中心
-    [self.mapView setCenterCoordinate:userLocation.location.coordinate animated:YES];
-    
-    //设置地图显示区域
-    MKCoordinateSpan span = MKCoordinateSpanMake(0.051109, 0.034153);
-    MKCoordinateRegion region = MKCoordinateRegionMake(userLocation.location.coordinate, span);
-    [self.mapView setRegion:region animated:YES];
     
 }
 
-- (void) mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+
+/**
+ *  当添加大头针时会调用这个代理方法
+ *  注意：如果返回值为nil，则会调用系统自身的某个方法
+ */
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
-   NSLog(@"%f----%f", mapView.region.span.latitudeDelta, mapView.region.span.longitudeDelta);
+    return nil;
 }
 
-- (CLLocationManager *)locationM
+- (CLGeocoder *)geoC
 {
-    if (!_locationM) {
-        _locationM = [[CLLocationManager alloc] init];
-        if ([_locationM respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-            //需要在info.plist 里面配置NSLocationAlwaysUsageDescription
-            [_locationM requestAlwaysAuthorization];
-        }
-        
+    if (!_geoC) {
+        _geoC = [[CLGeocoder alloc] init];
     }
-    return _locationM ;
+    return _geoC ;
 }
-
 
 @end
 

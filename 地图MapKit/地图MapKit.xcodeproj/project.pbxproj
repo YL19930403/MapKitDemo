@@ -17,6 +17,7 @@
 		293C7BE31C772ADB00D0E204 /* __MapKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 293C7BE21C772ADB00D0E204 /* __MapKitTests.m */; };
 		293C7BEE1C772ADB00D0E204 /* __MapKitUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 293C7BED1C772ADB00D0E204 /* __MapKitUITests.m */; };
 		293C7BFC1C772BD700D0E204 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293C7BFB1C772BD700D0E204 /* MapKit.framework */; };
+		293C7BFF1C774B3300D0E204 /* YLAnnotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 293C7BFE1C774B3300D0E204 /* YLAnnotion.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,8 @@
 		293C7BED1C772ADB00D0E204 /* __MapKitUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = __MapKitUITests.m; sourceTree = "<group>"; };
 		293C7BEF1C772ADB00D0E204 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		293C7BFB1C772BD700D0E204 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		293C7BFD1C774B3300D0E204 /* YLAnnotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLAnnotion.h; sourceTree = "<group>"; };
+		293C7BFE1C774B3300D0E204 /* YLAnnotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLAnnotion.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +114,8 @@
 				293C7BC91C772ADB00D0E204 /* AppDelegate.m */,
 				293C7BCB1C772ADB00D0E204 /* ViewController.h */,
 				293C7BCC1C772ADB00D0E204 /* ViewController.m */,
+				293C7BFD1C774B3300D0E204 /* YLAnnotion.h */,
+				293C7BFE1C774B3300D0E204 /* YLAnnotion.m */,
 				293C7BCE1C772ADB00D0E204 /* Main.storyboard */,
 				293C7BD41C772ADB00D0E204 /* Assets.xcassets */,
 				293C7BD61C772ADB00D0E204 /* LaunchScreen.storyboard */,
@@ -279,6 +284,7 @@
 			files = (
 				293C7BCD1C772ADB00D0E204 /* ViewController.m in Sources */,
 				293C7BD31C772ADB00D0E204 /* __MapKit.xcdatamodeld in Sources */,
+				293C7BFF1C774B3300D0E204 /* YLAnnotion.m in Sources */,
 				293C7BCA1C772ADB00D0E204 /* AppDelegate.m in Sources */,
 				293C7BC71C772ADB00D0E204 /* main.m in Sources */,
 			);
@@ -504,6 +510,7 @@
 				293C7BF41C772ADB00D0E204 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		293C7BF51C772ADB00D0E204 /* Build configuration list for PBXNativeTarget "地图MapKitTests" */ = {
 			isa = XCConfigurationList;
@@ -512,6 +519,7 @@
 				293C7BF71C772ADB00D0E204 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		293C7BF81C772ADB00D0E204 /* Build configuration list for PBXNativeTarget "地图MapKitUITests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +528,7 @@
 				293C7BFA1C772ADB00D0E204 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
