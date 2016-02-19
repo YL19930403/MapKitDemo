@@ -21,4 +21,6 @@
 
 @property(nonatomic,copy,nullable)NSString * subtitle ;
 
+@property(nonatomic,assign)NSInteger type ;
+
 @end

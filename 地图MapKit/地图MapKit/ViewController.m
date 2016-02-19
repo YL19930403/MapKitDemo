@@ -25,8 +25,8 @@
     [super viewDidLoad];
     
 }
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
     //1.获取当前触摸点
     CGPoint point = [[touches anyObject] locationInView:self.mapView];
     //2.转换为经纬度
@@ -49,10 +49,12 @@
     /**
      MKUserLocation (大头针模型)
      */
-    YLAnnotion * anno = [[YLAnnotion alloc] init];
+    __block YLAnnotion * anno = [[YLAnnotion alloc] init];
     anno.coordinate = point ;
     anno.title = @"你猜你猜";
     anno.subtitle = @"我猜不出";
+    anno.type = arc4random_uniform(5) ;//生成0-4之间的随机数
+
     [self.mapView addAnnotation:anno];
     
     //根据大头针所在经纬度，通过反地理编码求出所在的城市,街道
@@ -62,8 +64,8 @@
         CLPlacemark * placeMark = [placemarks firstObject];
         anno.subtitle = placeMark.locality ;
         anno.title = placeMark.country ;
-//        NSLog(@"%@",placeMark.country);
-//        NSLog(@"%@",placeMark.locality);
+        NSLog(@"%@",placeMark.country);
+        NSLog(@"%@",placeMark.locality);
         
     }];
     //添加多个大头针
@@ -83,7 +85,10 @@
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
 //    return nil;
-    // MKPinAnnotationView 为系统自带的大头针样式
+    /**
+        MKPinAnnotationView 为系统自带的大头针样式
+     */
+    /*
     static NSString * identifier = @"MKpinAnnotation";
     MKPinAnnotationView * pin = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
     if (pin == nil) {
@@ -103,7 +108,38 @@
     //设置大头针可以拖拽效果
     pin.draggable = YES ;   //按住control键再拖动
     return  pin ;
+    */
     
+    
+    /**
+       自定义大头针
+     */
+    static NSString * identifier = @"MKCustomAnnotation";
+    MKAnnotationView * CustomAnno = [mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    if (CustomAnno == nil) {
+        CustomAnno = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+    }
+    CustomAnno.canShowCallout = YES ;
+    CustomAnno.annotation = annotation ;
+    CustomAnno.draggable = YES ;
+    //设置大头针顶部弹出view的偏移量
+    CustomAnno.calloutOffset = CGPointMake(5, 10);
+    YLAnnotion * YLAnno = (YLAnnotion *)annotation ;
+    NSString * imageName = [NSString stringWithFormat:@"category_%zd",YLAnno.type+1];
+    CustomAnno.image = [UIImage imageNamed:imageName];
+    
+    //设置大头针顶部左边的image
+    UIImageView * leftImgV = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    leftImgV.image = [UIImage imageNamed:@"htl"];
+    CustomAnno.leftCalloutAccessoryView = leftImgV ;
+    
+    //设置大头针顶部右边的image
+    UIImageView * rightImgV = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    rightImgV.image = [UIImage imageNamed:@"eason"];
+    CustomAnno.rightCalloutAccessoryView = rightImgV ;
+    
+    CustomAnno.detailCalloutAccessoryView = [[UISwitch alloc] init];
+    return  CustomAnno ;
 }
 
 - (CLGeocoder *)geoC
